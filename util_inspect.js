@@ -12,3 +12,4 @@ Person.prototype.toString=function(){
 var p=new Person("xiaoming",18);
 console.log(util.inspect(p))
 console.log(util.inspect(p,true))
+
