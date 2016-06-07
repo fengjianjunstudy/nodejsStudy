@@ -4,17 +4,24 @@
 'use strict';
 let events = require('events');
 let EventEmitter = events.EventEmitter;
-
-const util = require('util');
-
-function Stream() {
-    //EventEmitter.call(this);
+let status = 'ready';
+function  select(callback) {
+    if(status === 'ready'){
+        status = 'pending';
+        setTimeout(() => {
+            status = 'ready';
+            callback('suc');
+        },10000)
+    }
 }
-util.inherits(Stream,EventEmitter);
-let s = new Stream();
-s.on('a',(data) => {
-    console.log(data);
-});
-s.emit('a','hello');
-
-
+for(let i = 0;i < 10; i++){
+    console.log(i);
+    select((data) => {
+        console.log(data,new Date(),'1');
+    });
+}
+setTimeout(() => {
+    select((data) => {
+        console.log(data,new Date(),'2');
+    });
+},20000)

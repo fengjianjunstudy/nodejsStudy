@@ -4,20 +4,26 @@
 'use strict';
 let events = require('events');
 let EventEmitter = events.EventEmitter;
+let proxy = new EventEmitter();
 let status = 'ready';
+let n = 0;
+proxy.setMaxListeners(0);
 function  select(callback) {
+    proxy.once('selected',(data) => {
+        callback(data);
+    });
     if(status === 'ready'){
         status = 'pending';
         setTimeout(() => {
             status = 'ready';
-            callback('suc');
+            proxy.emit('selected','hello word');
         },10000)
     }
 }
-for(let i = 0;i < 10; i++){
+for(let i = 0;i < 20; i++){
     console.log(i);
     select((data) => {
-        console.log(data,new Date(),'1');
+        console.log(data,n++);
     });
 }
 setTimeout(() => {

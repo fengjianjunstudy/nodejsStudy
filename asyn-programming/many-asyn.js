@@ -4,30 +4,25 @@
 'use strict';
 let events = require('events');
 let EventEmitter = events.EventEmitter;
-let proxy = new EventEmitter();
-let status = 'ready';
-let n = 0;
-proxy.setMaxListeners(0);
-function  select(callback) {
-    proxy.once('selected',(data) => {
-        callback(data);
-    });
-    if(status === 'ready'){
-        status = 'pending';
-        setTimeout(() => {
-            status = 'ready';
-            proxy.emit('selected','hello word');
-        },10000)
+let fs = require('fs');
+let count = 0;
+let result = {};
+function done(key,data) {
+    result[key] = data.toString();
+    count++;
+    if(count === 2) {
+        console.log('load success');
+        for(let k in result) {
+            console.log('=======',k,'=======');
+            console.log(result[k],count);
+            console.log('=======end=======');
+        }
     }
 }
-for(let i = 0;i < 20; i++){
-    console.log(i);
-    select((data) => {
-        console.log(data,n++);
-    });
-}
-setTimeout(() => {
-    select((data) => {
-        console.log(data,new Date(),'2');
-    });
-},20000)
+fs.readFile('./inherits-events.js',(err,data) => {
+    done('a',data);
+});
+fs.readFile('./avalanche-question.js',(err,data) => {
+    done('b',data);
+});
+
